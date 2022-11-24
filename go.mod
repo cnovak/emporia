@@ -1,4 +1,4 @@
-module github.com/cnovak/emporia-api-go
+module github.com/cnovak/emporia
 
 go 1.19
 

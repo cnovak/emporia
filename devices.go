@@ -76,12 +76,6 @@ func (c *Client) GetDevices() (*DeviceResponse, error) {
 	}
 	defer resp.Body.Close()
 
-	// body, err := io.ReadAll(resp.Body)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// fmt.Printf("============== \nResponse Body:\n============== \n%s\n\n", string(body))
-
 	if err := json.NewDecoder(resp.Body).Decode(&deviceResponse); err != nil {
 		return nil, fmt.Errorf("failed to decode devices: %v", err)
 	}

@@ -9,7 +9,7 @@ The [API documentation](https://github.com/magico13/PyEmVue/blob/master/api_docs
 
 ## Installation
 
-`go get -u github.com/cnovak/emporia-api-go`
+`go get -u github.com/cnovak/emporia`
 
 ## Usage
 You need a username and password to initialize the client:
@@ -45,7 +45,7 @@ func main() {
 ```
 
 ## Credits
-Thanks to Mike Marvin for his work in the [PyEmVue project](https://github.com/magico13/PyEmVue) documenting the Emporia Energy API.
+Thanks to [Mike Marvin](https://github.com/magico13) for his work in the [PyEmVue project](https://github.com/magico13/PyEmVue) documenting the Emporia Energy API.
 
 ## Disclaimer
 This project is not affiliated with or endorsed by Emporia Energy.
