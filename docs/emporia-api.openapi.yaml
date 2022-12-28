@@ -1,0 +1,340 @@
+openapi: "3.1.0"
+info:
+    version: "1.0.0"
+    title: "Sample API"
+    description: Buy or rent spacecrafts
+servers:
+    - url: https://api.emporiaenergy.com
+      description: Production API
+paths:
+    /customers:
+        parameters:
+            - name: email
+              description: The user email
+              in: query
+              required: true
+              schema:
+                  type: string
+                  description: The email of the user
+        get:
+            summary: Get customer information
+            responses:
+                200:
+                    description: The customer data for the email `email`
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Customer"
+                401:
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+    /customers/devices:
+        get:
+            summary: Get customer device information
+            responses:
+                200:
+                    description: The device list for the authorized user
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/CustomerDevices"
+                401:
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+    /devices/{deviceGid}/locationProperties:
+        get:
+            summary: Get device location info
+            parameters:
+                - name: deviceGid
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                200:
+                    description: The device location locationInformation
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/LocationInformation"
+                401:
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+    /AppAPI:
+        get:
+            summary: Get device location info
+            parameters:
+                - name: apiMethod
+                  description: Value is always `getDeviceListUsages`
+                  in: query
+                  schema:
+                      type: string
+                      example: "getDeviceListUsages"
+                      default: "getDeviceListUsages"
+                - name: deviceGids
+                  description: list of deviceGids appeneded with a `+` sign
+                  in: query
+                  schema:
+                      type: string
+                      example: "1234+4567"
+                - name: instant
+                  description: date time for the data
+                  in: query
+                  schema:
+                      type: string
+                      example: "2021-02-09T21:18:50.278474Z"
+                - name: scale
+                  description: The time scale to get the data for
+                  in: query
+                  schema:
+                      type: string
+                      enum:
+                          - 1S
+                          - 1MIN
+                          - 1H
+                          - 1D
+                          - 1W
+                          - 1MON
+                          - 1Y
+                - name: energyUnit
+                  description: The energy unit to use
+                  in: query
+                  schema:
+                      type: string
+                      enum:
+                          - KilowattHours
+                          - Dollars
+                          - AmpHours
+                          - Trees
+                          - GallonsOfGas
+                          - MilesDriven
+                          - Carbon
+                      example: "2021-02-09T21:18:50.278474Z"
+            responses:
+                200:
+                    description: The device list energy usages
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DeviceListUsages"
+                401:
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+components:
+    schemas:
+        Customer:
+            type: object
+            properties:
+                customerGid:
+                    $ref: "#/components/schemas/CustomerGid"
+                    example: "1234"
+                email:
+                    type: string
+                    example: "jane@example.com"
+                firstName:
+                    type: string
+                lastName:
+                    type: string
+                createdAt:
+                    type: string
+                    format: date-time
+                    example: "2020-01-01T12:34:56.789Z"
+        CustomerDevices:
+            type: object
+            properties:
+                customerGid:
+                    type: integer
+                    format: int64
+                    example: "1234"
+                email:
+                    type: string
+                firstName:
+                    type: string
+                lastName:
+                    type: string
+                createdAt:
+                    type: string
+                    format: date-time
+                    example: "2020-01-01T12:34:56.789Z"
+                devices:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/Device"
+        Device:
+            type: object
+            properties:
+                deviceGid:
+                    type: integer
+                    format: int64
+                manufacturerDeviceId:
+                    format: string
+                model:
+                    format: string
+                firmware:
+                    format: string
+                locationProperties:
+                    $ref: "#/components/schemas/LocationProperties"
+                outlet:
+                    type: string
+                devices:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/Device"
+                channels:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/Channel"
+        locationProperties:
+            type: object
+            properties:
+                deviceGid:
+                    type: integer
+                    format: int64
+                    example: 1234
+                deviceName:
+                    type: string
+                    example: "MyHome"
+                zipCode:
+                    type: string
+                timeZone:
+                    type: string
+                    example: "America/New_York"
+                billingCycleStartDay:
+                    type: number
+                    format: int32
+                    example: 15
+                usageCentPerKwHour:
+                    type: number
+                    format: float
+                    example: 15.0
+                peakDemandDollarPerKw:
+                    type: number
+                    format: float
+                    example: 0.0
+                latitudeLongitude:
+                    type: string
+                locationInformation:
+                    $ref: "#/components/schemas/LocationInformation"
+        LocationInformation:
+            type: object
+            properties:
+                airConditioning:
+                    type: string
+                    example: "true"
+                heatSource:
+                    type: string
+                    example: "electricSpaceHeater"
+                locationSqFt:
+                    type: string
+                    example: "1200"
+                numElectricCars:
+                    type: string
+                    example: "1"
+                locationType:
+                    type: string
+                    example: "houseMultiLevel"
+                numPeople:
+                    type: string
+                    example: "2"
+                swimmingPool:
+                    type: string
+                    example: "false"
+                hotTub:
+                    type: string
+                    example: "false"
+        Channel:
+            type: object
+            properties:
+                deviceGid:
+                    type: integer
+                    format: int64
+                    example: "12345"
+                name:
+                    type: string
+                channelNum:
+                    type: string
+                    example: "1,2,3"
+                channelMultiplier:
+                    type: string
+                    example: "1.0"
+                channelTypeGid:
+                    type: integer
+                    format: int64
+        DeviceListUsages:
+            type: object
+            properties:
+                instant:
+                    description: date time for the data
+                    type: string
+                    example: "2021-02-09T21:18:50.278474Z"
+                scale:
+                    type: string
+                    example: "1S"
+                devices:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/DeviceUsages"
+        DeviceUsages:
+            type: object
+            properties:
+                deviceGid:
+                    type: integer
+                    format: int64
+                channelUsages:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/ChannelUsages"
+        ChannelUsages:
+            type: object
+            properties:
+                name:
+                    type: string
+                    example: "Main"
+                usage:
+                    type: integer
+                    format: int32
+                    example: 10.234881177404192
+                deviceGid:
+                    type: integer
+                    format: int64
+                channelNum:
+                    type: string
+                    example: "1,2,3"
+                percentage:
+                    type: integer
+                    format: float
+                    example: "85.0"
+                nestedDevices:
+                    type: array
+                    items:
+                        $ref: "#/compons/schemas/DeviceUsages"
+        Error:
+            type: object
+            required:
+                - message
+            properties:
+                message:
+                    description: A human readable error message
+                    type: string
+    securitySchemes:
+        authToken:
+            description:
+                The API uses AWS cognito IDP for authentication. The ID token is used
+                to to calls to authenticate the user.
+            type: apiKey
+            name: authtoken
+            in: header
+security:
+    - authToken: []

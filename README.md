@@ -5,7 +5,7 @@
 
 The library can be invoked directly to pull back some basic info but requires your email and password to be added to a keys.json file, which is then replaced with the access tokens.
 
-The [API documentation](https://github.com/magico13/PyEmVue/blob/master/api_docs.md) can help to understand the underlaying API.
+[Mike Marvin](https://github.com/magico13)'s [API documentation](https://github.com/magico13/PyEmVue/blob/master/api_docs.md) can help to understand the underlaying API, or use the OpenAPI file in the `/docs` directory to understand the API.
 
 ## Installation
 
