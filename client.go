@@ -2,6 +2,7 @@ package emporia
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -67,6 +68,19 @@ func (c *Client) do(req *http.Request) (*http.Response, error) {
 	if resp.StatusCode == http.StatusUnauthorized {
 		// TODO: Refresh the token
 		return nil, fmt.Errorf("unauthorized: %v", err)
+	}
+
+	if resp.StatusCode != 200 {
+		// get error from message
+		error := struct {
+			Message string `json:"message"`
+		}{}
+		err := json.NewDecoder(resp.Body).Decode(&error)
+		if err != nil {
+			return nil, fmt.Errorf("cannot parse http error response: %v", err)
+		}
+
+		return nil, fmt.Errorf("http error: %v", error.Message)
 	}
 
 	return resp, nil

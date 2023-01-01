@@ -8,7 +8,7 @@ import (
 
 type (
 	DeviceResponse struct {
-		CustomerGid int      `json:"customerGid"`
+		CustomerGID int      `json:"customerGid"`
 		Email       string   `json:"email"`
 		FirstName   string   `json:"firstName"`
 		LastName    string   `json:"lastName"`
@@ -17,7 +17,7 @@ type (
 	}
 
 	Device struct {
-		DeviceGid            int64            `json:"deviceGid"`
+		DeviceGID            uint64           `json:"deviceGid"`
 		ManufacturerDeviceID string           `json:"manufacturerDeviceId"`
 		Model                string           `json:"model"`
 		Firmware             string           `json:"firmware"`
@@ -27,7 +27,7 @@ type (
 	}
 
 	LocationProperty struct {
-		DeviceGid             int64               `json:"deviceGid"`
+		DeviceGID             uint64              `json:"deviceGid"`
 		DeviceName            string              `json:"deviceName"`
 		ZipCode               string              `json:"zipCode"`
 		TimeZone              string              `json:"timeZone"`
@@ -44,11 +44,11 @@ type (
 	}
 
 	Channel struct {
-		DeviceGid         int     `json:"deviceGid"`
+		DeviceGID         int     `json:"deviceGid"`
 		Name              string  `json:"name"`
 		ChannelNum        string  `json:"channelNum"`
 		ChannelMultiplier float64 `json:"channelMultiplier"`
-		ChannelTypeGid    int     `json:"channelTypeGid"`
+		ChannelTypeGID    int     `json:"channelTypeGid"`
 	}
 
 	LocationInformation struct {
@@ -62,6 +62,62 @@ type (
 		HotTub          bool   `json:"hotTub"`
 	}
 )
+
+type ChannelType uint8
+
+const (
+	AirConditioner  ChannelType = 1
+	Battery         ChannelType = 2
+	Boiler          ChannelType = 3
+	ClothesDryer    ChannelType = 4
+	ClothesWasher   ChannelType = 5
+	Computer        ChannelType = 6
+	Cooktop         ChannelType = 7
+	Dishwasher      ChannelType = 8
+	ElectricVehicle ChannelType = 9
+	Fridge          ChannelType = 10
+	Furnace         ChannelType = 11
+	Garage          ChannelType = 12
+	Solar           ChannelType = 13
+	HotTub          ChannelType = 14
+	Humidifier      ChannelType = 15
+	Kitchen         ChannelType = 16
+	Microwave       ChannelType = 17
+	Other           ChannelType = 18
+	Pump            ChannelType = 19
+	Room            ChannelType = 20
+	SubPanel        ChannelType = 21
+	WaterHeater     ChannelType = 22
+	HeatPump        ChannelType = 24
+	Lights          ChannelType = 26
+)
+
+var ChannelTypeLookup = map[string]ChannelType{
+	"Air Conditioner":          AirConditioner,
+	"Battery":                  Battery,
+	"Boiler":                   Boiler,
+	"Clothes Dryer":            ClothesDryer,
+	"Clothes Washer":           ClothesWasher,
+	"Computer/Network":         Computer,
+	"Cooktop/Range/Oven/Stove": Cooktop,
+	"Dishwasher":               Dishwasher,
+	"Electric Vehicle/RV":      ElectricVehicle,
+	"Fridge/Freezer":           Fridge,
+	"Furnace":                  Furnace,
+	"Garage/Shop/Barn/Shed":    Garage,
+	"Solar/Generation":         Solar,
+	"Hot Tub/Spa":              HotTub,
+	"Humidifier/Dehumidifier":  Humidifier,
+	"Kitchen":                  Kitchen,
+	"Microwave":                Microwave,
+	"Other":                    Other,
+	"Pump":                     Pump,
+	"Room/Multi-use Circuit":   Room,
+	"Sub Panel":                SubPanel,
+	"Water Heater":             WaterHeater,
+	"Heat Pump":                HeatPump,
+	"Lights":                   Lights,
+}
 
 func (c *Client) GetDevices() (*DeviceResponse, error) {
 	url, err := url.Parse(fmt.Sprintf("%s/customers/devices", apiBaseURL))
@@ -81,4 +137,20 @@ func (c *Client) GetDevices() (*DeviceResponse, error) {
 	}
 
 	return &deviceResponse, nil
+}
+
+func (c *Client) GetSolar() (*[]Device, error) {
+	devices, err := c.GetDevices()
+	if err != nil {
+		return nil, err
+	}
+
+	var solarDevices []Device
+	for _, device := range devices.Devices {
+		if device.Model == "Solar" {
+			solarDevices = append(solarDevices, device)
+		}
+	}
+
+	return &solarDevices, nil
 }
