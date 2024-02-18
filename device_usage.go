@@ -215,7 +215,7 @@ func (c *Client) GetDeviceListUsages(deviceGids []uint64, scale Scale, energyUni
 	q := req.URL.Query()
 	q.Add("apiMethod", "getDeviceListUsages")
 	q.Add("deviceGids", SplitToString(deviceGids, "+"))
-	q.Add("instant", instant.Format("2006-01-02T15:04:05Z"))
+	q.Add("instant", instant.UTC().Format("2006-01-02T15:04:05Z"))
 	q.Add("scale", scale.String())
 	q.Add("energyUnit", energyUnit.String())
 	req.URL.RawQuery = q.Encode()
